@@ -1,0 +1,17 @@
+{
+  "name": "sigmo"
+, "description": "an app that uses Twilio and Venmo"
+, "author": "Justin Woo & Arun Thampi"
+, "version": "0.0.1"
+, "private": true
+, "main": "./app"
+, "dependencies": {
+    "express"       : "4.12.x"
+  , "twilio"        : "2.2.x"
+  , "request"       : "2.55.x"
+  }
+, "engines": {
+    "node"         : "0.12.x"
+  , "npm"          : "2.2.x"
+  }
+}

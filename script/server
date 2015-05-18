@@ -1,0 +1,4 @@
+#!/bin/bash
+
+export $(cat .env)
+node app.js
