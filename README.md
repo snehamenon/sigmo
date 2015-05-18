@@ -27,11 +27,26 @@ also to limit the total number of gifts being sent. Install
 6. In a separate window, run `ngrok 3000`. This opens up a reverse
    tunnel to your server that is publicly accessible on the Internet.
 7. Copy the `https` URL from ngrok and paste the URL of your server
-   into the "SMS" URL of a number on the Numbers page of your Twilio
+   into the "SMS" URL of a number on the [Numbers
+page](https://www.twilio.com/user/account/phone-numbers/incoming) of your Twilio
 Account. On the page for that number, change the Method from "POST" to
 "GET".
 
 You're done!
+
+### Deploying to Heroku
+
+1. Create a Heroku app within this directory using `heroku create` Copy the URL of your app and paste the URL of your server into the "SMS" URL of a number on the [Numbers
+page](https://www.twilio.com/user/account/phone-numbers/incoming) of your Twilio
+Account. On the page for that number, change the Method from "POST" to
+"GET".
+2. Run `git push heroku master`
+3. Run `heroku scale web=1`
+4. Run `heroku addons:create redistogo`
+5. Set the `VENMO_ACCESS_TOKEN` environment variable with your access
+   token using `heroku config:set
+VENMO_ACCESS_TOKEN=your-venmo-access-token`
+6. Set the gift limit using `heroku config:set GIFT_LIMIT=100`
 
 ### Credits
 
