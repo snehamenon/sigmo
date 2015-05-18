@@ -24,3 +24,8 @@ Account. On the page for that number, change the Method from "POST" to
 "GET".
 
 You're done!
+
+### Credits
+
+This app was built by [Justin Woo](https://twitter.com/jzwoo) and [Arun
+Thampi](https://twitter.com/iamclovin)
