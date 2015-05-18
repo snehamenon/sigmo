@@ -57,6 +57,8 @@ app.get('/sigmo', function(req, res) {
   });
 });
 
-var server = app.listen(3000, function () {
+app.set('port', (process.env.PORT || 3000));
+
+var server = app.listen(app.get('port'), function () {
   console.log("started Sigmo");
 });
