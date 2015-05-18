@@ -9,6 +9,14 @@ These instructions have only been tested on OS X and Linux and assumes
 you have Node.JS installed. YMMV for
 Windows users
 
+#### Redis
+
+This app uses Redis to make sure duplicate gifts are not being sent and
+also to limit the total number of gifts being sent. Install
+[Redis](http://redis.io) and start it by running `redis-server`.
+
+### App Instructions
+
 0. Run `npm install`
 1. `cp .env-example .env`
 2. Change all the credentials in the `.env` file with actual Twilio and
