@@ -1,37 +1,62 @@
 var express = require('express');
 var request = require('request');
+var redis = require("redis");
+var redisClient = null;
+
+if (process.env.REDISTOGO_URL) {
+  var rtg   = require("url").parse(process.env.REDISTOGO_URL);
+  redisClient = redis.createClient(rtg.port, rtg.hostname);
+  redisClient.auth(rtg.auth.split(":")[1]);
+} else {
+  redisClient = redis.createClient();
+}
 
 var app = express();
-
-var accountSid = process.env['TWILIO_ACCOUNT_SID']
-var authToken = process.env['TWILIO_AUTH_TOKEN']
-
-//require the Twilio module and create a REST client
-var client = require('twilio')(accountSid, authToken);
+var redisKey = 'SIGMO';
 
 app.get('/sigmo', function(req, res) {
   fromNumber = req.query['From'];
 
-	request({
-		url: 'https://api.venmo.com/v1/payments',
-		qs: {
-			phone: fromNumber,
-			access_token: process.env['VENMO_ACCESS_TOKEN'],
-			amount: '1.00',
-			note: 'Thank you for using Venmo',
-		},
-		method: 'POST',
-	}, function(error, response, body){
-		if(error) {
-      console.log(error);
-      res.send("There was an error sending the money to " + fromNumber);
+  redisClient.hlen(redisKey, function(err, length) {
+    if(length < process.env.GIFT_LIMIT) {
+      if(fromNumber != "") {
+        redisClient.hget(redisKey, fromNumber, function(err, reply) {
+          if(reply == 'true') {
+            errorMessage = "You have already requested your gift, thanks for trying!";
+            console.log(errorMessage)
+            res.status(500).send(errorMessage);
+          } else {
+            redisClient.hset(redisKey, fromNumber, 'true');
+
+            request({
+              url: 'https://api.venmo.com/v1/payments',
+              qs: {
+                phone: fromNumber,
+                access_token: process.env['VENMO_ACCESS_TOKEN'],
+                amount: '1.00',
+                note: 'Thank you for using Venmo',
+              },
+              method: 'POST',
+            }, function(error, response, body){
+              if(error) {
+                console.log(error);
+                res.status(500).send("There was an error sending the money to " + fromNumber);
+              } else {
+                console.log(response.statusCode, body);
+                res.status(200).send("Thanks for trying out Sigmo!");
+              }
+            });
+          }
+        });
+      }
     } else {
-      console.log(response.statusCode, body);
-      res.send("Hello World");
+      errorMessage = "Gift Period is Done";
+      console.log(errorMessage)
+      res.status(500).send(errorMessage);
     }
-	});
+  });
 });
 
 var server = app.listen(3000, function () {
-	console.log("started Sigmo");
+  console.log("started Sigmo");
 });

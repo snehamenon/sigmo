@@ -9,6 +9,8 @@
     "express"       : "4.12.x"
   , "twilio"        : "2.2.x"
   , "request"       : "2.55.x"
+  , "redis"         : "0.12.x"
+  , "hiredis"       : "0.3.x"
   }
 , "engines": {
     "node"         : "0.12.x"
